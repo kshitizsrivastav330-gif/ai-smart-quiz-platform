@@ -15,14 +15,19 @@ function Login() {
 
             const response = await loginUser({
                 email,
-                password,
+                password
             });
 
-            console.log("Login Success:", response.data);
-
             localStorage.setItem("token", response.data.token);
+            localStorage.setItem("role", response.data.role);
 
-            navigate("/admin/dashboard");
+            alert("Login Successful");
+
+            if (response.data.role === "ADMIN") {
+                navigate("/admin/dashboard");
+            } else {
+                navigate("/student/dashboard");
+            }
 
         } catch (error) {
 
@@ -31,17 +36,20 @@ function Login() {
             if (error.response) {
                 alert(error.response.data.message || "Invalid Email or Password");
             } else {
-                alert("Server not reachable");
+                alert("Server Not Reachable");
             }
+
         }
+
     };
 
     return (
-        <div className="min-h-screen bg-slate-100 flex justify-center items-center">
 
-            <div className="bg-white shadow-lg rounded-xl p-8 w-96">
+        <div className="min-h-screen flex justify-center items-center bg-gray-100">
 
-                <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">
+            <div className="bg-white shadow-xl rounded-xl p-8 w-96">
+
+                <h1 className="text-3xl font-bold text-center text-blue-600 mb-8">
                     AI Smart Quiz
                 </h1>
 
@@ -63,25 +71,30 @@ function Login() {
 
                 <button
                     onClick={handleLogin}
-                    className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700"
+                    className="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg"
                 >
                     Login
                 </button>
 
-                <p className="text-center mt-5">
-                    Don't have an account?{" "}
+                <p className="text-center mt-6">
+
+                    Don't have an account?
+
                     <span
-                        className="text-blue-600 cursor-pointer"
+                        className="text-blue-600 cursor-pointer ml-2"
                         onClick={() => navigate("/register")}
                     >
                         Register
                     </span>
+
                 </p>
 
             </div>
 
         </div>
+
     );
+
 }
 
 export default Login;
