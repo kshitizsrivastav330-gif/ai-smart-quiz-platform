@@ -4,6 +4,8 @@ import com.kshitiz.quiz.dto.QuestionResponse;
 import com.kshitiz.quiz.dto.QuizRequest;
 import com.kshitiz.quiz.dto.QuizResultResponse;
 import com.kshitiz.quiz.dto.QuizSubmitRequest;
+import com.kshitiz.quiz.entity.Quiz;
+import com.kshitiz.quiz.entity.QuizAttempt;
 import com.kshitiz.quiz.service.QuizService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,5 +35,26 @@ public class QuizController {
     @PostMapping("/submit")
     public QuizResultResponse submitQuiz(@RequestBody QuizSubmitRequest request) {
         return quizService.submitQuiz(request);
+    }
+    @GetMapping
+    public List<Quiz> getAllQuizzes() {
+        return quizService.getAllQuizzes();
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteQuiz(@PathVariable Long id) {
+        return quizService.deleteQuiz(id);
+    }
+    @GetMapping("/available")
+    public List<Quiz> availableQuizzes() {
+        return quizService.getAvailableQuizzes();
+    }
+    @GetMapping("/results")
+    public List<QuizAttempt> getResults() {
+        return quizService.getAllAttempts();
+    }
+    @GetMapping("/leaderboard")
+    public List<QuizAttempt> leaderboard() {
+        return quizService.getLeaderboard();
     }
 }

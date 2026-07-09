@@ -17,6 +17,8 @@ import com.kshitiz.quiz.repository.QuizRepository;
 import com.kshitiz.quiz.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collections;
 import java.util.List;
@@ -70,6 +72,16 @@ public class QuizService {
                         quiz.getCategory().getId(),
                         quiz.getDifficulty());
 
+        System.out.println("==================================");
+        System.out.println("Quiz ID: " + quizId);
+        System.out.println("Category ID: " + quiz.getCategory().getId());
+        System.out.println("Difficulty: " + quiz.getDifficulty());
+        System.out.println("Questions Found: " + questions.size());
+
+        for (Question q : questions) {
+            System.out.println(q.getId() + " -> " + q.getQuestion());
+        }
+
         Collections.shuffle(questions);
 
         return questions.stream()
@@ -113,7 +125,13 @@ public class QuizService {
                 .orElseThrow(() -> new RuntimeException("Quiz Not Found"));
 
         // Temporary user (Later we'll get from JWT)
-        User user = userRepository.findById(1L)
+        Authentication authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        String email = authentication.getName();
+
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User Not Found"));
 
         QuizAttempt attempt = QuizAttempt.builder()
@@ -133,6 +151,37 @@ public class QuizService {
                 .percentage(percentage)
                 .result(result)
                 .build();
+    }
+    public List<Quiz> getAllQuizzes() {
+        return quizRepository.findAll();
+    }
+
+    public String deleteQuiz(Long id) {
+        quizRepository.deleteById(id);
+        return "Quiz Deleted Successfully";
+    }
+    public List<Quiz> getAvailableQuizzes() {
+
+        List<Quiz> quizzes = quizRepository.findAll();
+
+        return quizzes.stream()
+                .filter(quiz -> {
+
+                    List<Question> questions =
+                            questionRepository.findByCategoryIdAndDifficulty(
+                                    quiz.getCategory().getId(),
+                                    quiz.getDifficulty());
+
+                    return questions.size() >= quiz.getNumberOfQuestions();
+
+                })
+                .toList();
+    }
+    public List<QuizAttempt> getAllAttempts() {
+        return quizAttemptRepository.findAllByOrderBySubmittedAtDesc();
+    }
+    public List<QuizAttempt> getLeaderboard() {
+        return quizAttemptRepository.findAllByOrderByPercentageDesc();
     }
 
 }

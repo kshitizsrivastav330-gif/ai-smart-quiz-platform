@@ -37,6 +37,8 @@ public class User implements UserDetails {
     private Role role;
 
     private LocalDateTime createdAt;
+    @Column(unique = true)
+    private String rollNumber;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

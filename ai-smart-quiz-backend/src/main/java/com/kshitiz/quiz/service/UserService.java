@@ -34,9 +34,10 @@ public class UserService {
 
         User user = User.builder()
                 .fullName(request.getFullName())
+                .rollNumber(request.getRollNumber())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.STUDENT)
+                .role(request.getRole())
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -59,7 +60,8 @@ public class UserService {
 
         return new AuthResponse(
                 "Login Successful",
-                token
+                token,
+                user.getRole().name()
         );
     }
 }

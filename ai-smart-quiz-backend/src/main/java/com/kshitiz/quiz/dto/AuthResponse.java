@@ -1,4 +1,3 @@
-
 package com.kshitiz.quiz.dto;
 
 import lombok.AllArgsConstructor;
@@ -10,4 +9,6 @@ public class AuthResponse {
 
     private String message;
     private String token;
+    private String role;
+
 }

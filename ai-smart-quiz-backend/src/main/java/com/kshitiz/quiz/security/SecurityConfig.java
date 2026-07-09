@@ -46,11 +46,9 @@ public class SecurityConfig {
 
                         .requestMatchers("/api/ai/**").permitAll()
 
-                        .requestMatchers("/api/categories/**").hasRole("ADMIN")
-
-                        .requestMatchers("/api/questions/**").hasRole("ADMIN")
-
-                        .requestMatchers("/api/quizzes/**").hasRole("ADMIN")
+                        .requestMatchers("/api/categories/**").permitAll()
+                        .requestMatchers("/api/questions/**").permitAll()
+                        .requestMatchers("/api/quizzes/**").permitAll()
 
                         .requestMatchers("/api/dashboard/**").hasRole("ADMIN")
 
